@@ -7,7 +7,7 @@ Let's try to automate one of the most common tasks in orbital maneuvering - exec
 
 So to start our script we need to get the next available :ref:`maneuver node <maneuver node>`::
 
-    set nd to nextnode().
+    set nd to nextnode.
 
 Our next step is to calculate how much time our vessel needs to burn at full throttle to execute the node::
 
@@ -47,10 +47,10 @@ The wait has finished, and now we need to start turning our ship in the directio
     lock steering to np.
 
     //now we need to wait until the burn vector and ship's facing are aligned
-    wait until abs(np:pitch - facing:pitch) < 0.15 and abs(np:yaw - facing:yaw) < 0.15.
+    wait until abs(np:direction:pitch - facing:pitch) < 0.15 and abs(np:direction:yaw - facing:yaw) < 0.15.
 
     //the ship is facing the right direction, let's wait for our burn time
-    wait until node:eta <= (burn_duration/2)
+    wait until node:eta <= (burn_duration/2).
 
 Now we are ready to burn. It is usually done in the `until` loop, checking main parameters of the burn every iteration until the burn is complete::
 
@@ -77,7 +77,7 @@ Now we are ready to burn. It is usually done in the `until` loop, checking main 
             print "End burn, remain dv " + round(nd:deltav:mag,1) + "m/s, vdot: " + round(vdot(dv0, nd:deltav),1).
             lock throttle to 0.
             break.
-        }
+        }.
 
         //we have very little left to burn, less then 0.1m/s
         if nd:deltav:mag < 0.1
@@ -90,8 +90,8 @@ Now we are ready to burn. It is usually done in the `until` loop, checking main 
             lock throttle to 0.
             print "End burn, remain dv " + round(nd:deltav:mag,1) + "m/s, vdot: " + round(vdot(dv0, nd:deltav),1).
             set done to True.
-        }
-    }
+        }.
+    }.
     unlock steering.
     unlock throttle.
     wait 1.
